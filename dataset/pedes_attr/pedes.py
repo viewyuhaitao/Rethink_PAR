@@ -23,6 +23,7 @@ class PedesAttr(data.Dataset):
         dataset_info = pickle.load(open(data_path, 'rb+'))
 
         img_id = dataset_info.image_name
+        print('img_id',img_id)
 
         attr_label = dataset_info.label
         attr_label[attr_label == 2] = 0
@@ -54,6 +55,7 @@ class PedesAttr(data.Dataset):
         self.target_transform = target_transform
 
         self.root_path = dataset_info.root
+        print('root_path',self.root_path)
 
         if self.target_transform:
             self.attr_num = len(self.target_transform)
@@ -63,6 +65,7 @@ class PedesAttr(data.Dataset):
             print(f'{split} target_label: all')
 
         self.img_idx = dataset_info.partition[split]
+        print('img_idx',self.img_idx)
 
         if isinstance(self.img_idx, list):
             self.img_idx = self.img_idx[0]  # default partition 0
@@ -77,10 +80,16 @@ class PedesAttr(data.Dataset):
     def __getitem__(self, index):
 
         imgname, gt_label, imgidx = self.img_id[index], self.label[index], self.img_idx[index]
+        print('imgname, gt_label, imgidx',imgname, gt_label, imgidx)
 
         imgpath = os.path.join(self.root_path, imgname)
+        # print('imgpath',imgpath)
         img = Image.open(imgpath)
-
+        # try:
+        #     img = Image.open(imgpath)
+        # except FileNotFoundError:
+        #     print(f"File not found: {imgpath}, skipping this sample.")
+        #     return None  # 或者返回一个默认值
         if self.transform is not None:
             img = self.transform(img)
 

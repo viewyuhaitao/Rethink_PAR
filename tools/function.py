@@ -100,7 +100,7 @@ def get_pkl_rootpath(dataset, zero_shot):
         data_path = os.path.join(root, 'dataset_zs_run0.pkl')
     else:
         # data_path = os.path.join(root, 'dataset_all.pkl')
-        data_path = os.path.join(root, 'dataset_text.pkl')
+        data_path = os.path.join(root, 'dataset_text2.pkl')
     return data_path
 
 

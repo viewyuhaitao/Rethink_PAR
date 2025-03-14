@@ -24,7 +24,7 @@ def generate_data_description(save_dir, reorder):
     create a dataset description file, which consists of images, labels
     """
     # pa100k_data = loadmat('/mnt/data1/jiajian/dataset/attribute/PA100k/annotation.mat')
-    pa100k_data = loadmat(os.path.join(save_dir, 'annotation.mat'))
+    pa100k_data = loadmat(os.path.join(save_dir, 'annotation5.mat'))
 
     dataset = EasyDict()
     dataset.description = 'pa100k'
@@ -34,8 +34,10 @@ def generate_data_description(save_dir, reorder):
     # train_image_name = [pa100k_data['train_images_name'][i][0][0] for i in range(80000)]
     # val_image_name = [pa100k_data['val_images_name'][i][0][0] for i in range(10000)]
     # test_image_name = [pa100k_data['test_images_name'][i][0][0] for i in range(10000)]
+    print(pa100k_data.keys())  # 打印所有键
     train_image_name = [pa100k_data['train_images_name'][i][0][0] for i in range(1600)]
     val_image_name = [pa100k_data['val_images_name'][i][0][0] for i in range(200)]
+    print(len(pa100k_data['test_images_name']))
     test_image_name = [pa100k_data['test_images_name'][i][0][0] for i in range(200)]
     dataset.image_name = train_image_name + val_image_name + test_image_name
 
@@ -64,7 +66,7 @@ def generate_data_description(save_dir, reorder):
     # with open(os.path.join(save_dir, 'dataset_all.pkl'), 'wb+') as f:
     #     pickle.dump(dataset, f)
 
-    with open(os.path.join(save_dir, 'dataset_text.pkl'), 'wb+') as f:
+    with open(os.path.join(save_dir, 'dataset_text2.pkl'), 'wb+') as f:
         pickle.dump(dataset, f)
 
 

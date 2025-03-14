@@ -36,7 +36,8 @@ LOSS:
 
 TRAIN:
   CLIP_GRAD: True
-  BATCH_SIZE: 64
+  MAX_EPOCH: 4
+  BATCH_SIZE: 4
   OPTIMIZER:
     TYPE: 'adam'
     WEIGHT_DECAY: 5e-4

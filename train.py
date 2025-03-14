@@ -19,8 +19,13 @@ from dataset.pedes_attr.pedes import PedesAttr
 from metrics.ml_metrics import get_multilabel_metrics
 from metrics.pedestrian_metrics import get_pedestrian_metrics
 from models.base_block import FeatClassifier
+from losses.bceloss import BCELoss
+from losses.scaledbceloss import ScaledBCELoss
 from models.model_ema import ModelEmaV2
 from models.model_factory import build_loss, build_classifier, build_backbone
+from models.registry import BACKBONE
+from models.backbone.resnet import resnet50
+
 from optim.adamw import AdamW
 from scheduler.cos_annealing_with_restart import CosineAnnealingLR_with_Restart
 from scheduler.cosine_lr import CosineLRScheduler
@@ -38,6 +43,7 @@ torch.autograd.set_detect_anomaly(True)
 
 
 def main(cfg, args):
+    print('cfg:',cfg)
     set_seed(605)
     exp_dir = os.path.join('exp_result', cfg.DATASET.NAME)
 
@@ -257,6 +263,9 @@ def trainer(cfg, args, epoch, model, model_ema, train_loader, valid_loader, crit
     result_path = path
     result_path = result_path.replace('ckpt_max', 'metric')
     result_path = result_path.replace('pth', 'pkl')
+    result_path = result_path.replace(':', '-')
+
+    count_epoch = 0
 
     for e in range(epoch):
 
@@ -402,10 +411,20 @@ def trainer(cfg, args, epoch, model, model_ema, train_loader, valid_loader, crit
                                                     'CF1': valid_metric.CF1}, e)
 
             cur_metric = valid_metric.map
+            # if cur_metric > maximum:
+            #     maximum = cur_metric
+            #     best_epoch = e
+            #     save_ckpt(model, path, e, maximum)
+            # 比较当前指标和最优指标
             if cur_metric > maximum:
                 maximum = cur_metric
                 best_epoch = e
                 save_ckpt(model, path, e, maximum)
+
+            # 判断是否已到到最后一轮
+            if count_epoch == epoch:
+                save_ckpt(model, path, e, maximum)
+
 
             result_list[e] = {
                 'train_result': train_metric, 'valid_result': valid_metric,
@@ -417,7 +436,7 @@ def trainer(cfg, args, epoch, model, model_ema, train_loader, valid_loader, crit
 
         with open(result_path, 'wb') as f:
             pickle.dump(result_list, f)
-
+        count_epoch = count_epoch + 1
     return maximum, best_epoch
 
 

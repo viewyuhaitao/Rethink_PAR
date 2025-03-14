@@ -338,6 +338,23 @@ def load_ckpt(modules_optims, ckpt_file, load_to_cpu=True, verbose=True):
 #     return unwrap_fn(model).state_dict()
 
 
+# def save_ckpt(model, ckpt_files, epoch, metric):
+#     """
+#     Note:
+#         torch.save() reserves device type and id of tensors to save.
+#         So when loading ckpt, you have to inform torch.load() to load these tensors
+#         to cpu or your desired gpu, if you change devices.
+#     """
+#
+#     if not os.path.exists(os.path.dirname(os.path.abspath(ckpt_files))):
+#         os.makedirs(os.path.dirname(os.path.abspath(ckpt_files)))
+#
+#     save_dict = {'state_dicts': model.state_dict(),
+#                  'state_dict_ema': unwrap_model(model).state_dict(),
+#                  'epoch': f'{time_str()} in epoch {epoch}',
+#                  'metric': metric,}
+#
+#     torch.save(save_dict, ckpt_files)
 def save_ckpt(model, ckpt_files, epoch, metric):
     """
     Note:
@@ -345,6 +362,8 @@ def save_ckpt(model, ckpt_files, epoch, metric):
         So when loading ckpt, you have to inform torch.load() to load these tensors
         to cpu or your desired gpu, if you change devices.
     """
+    # 替换文件名中的冒号
+    ckpt_files = ckpt_files.replace(':', '-')
 
     if not os.path.exists(os.path.dirname(os.path.abspath(ckpt_files))):
         os.makedirs(os.path.dirname(os.path.abspath(ckpt_files)))

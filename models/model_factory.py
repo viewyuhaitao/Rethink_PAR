@@ -9,7 +9,8 @@ def build_backbone(key, multi_scale=False):
     # print(BACKBONE.keys())  # 确认注册表中的键
     # if key not in BACKBONE:
     #     raise KeyError(f"Model {key} not registered in BACKBONE.")
-
+    print(f"Available losses: {list(LOSSES.keys())}")  # 打印所有可用的损失函数类型
+    print(f"Available backbones: {list(BACKBONE.keys())}")  # 打印所有可用的 backbone 类型
     model_dict = {
         'resnet34': 512,
         'resnet18': 512,
@@ -27,10 +28,13 @@ def build_backbone(key, multi_scale=False):
     }
     # import pdb
     #pdb.set_trace()
-    model = BACKBONE[key]()
-    output_d = model_dict[key]
-
-    return model, output_d
+    try:
+        model = BACKBONE[key]()
+        output_d = model_dict[key]
+        return model, output_d
+    except KeyError:
+        print(f"Error: Backbone type '{key}' is not registered.")
+        raise
 
 
 def build_classifier(key):

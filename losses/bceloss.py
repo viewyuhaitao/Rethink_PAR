@@ -5,7 +5,7 @@ import torch.nn.functional as F
 from models.registry import LOSSES
 from tools.function import ratio2weight
 
-
+print("Registering BCELoss...")  # 添加调试信息
 @LOSSES.register("bceloss")
 class BCELoss(nn.Module):
 
